@@ -6,7 +6,8 @@ import Image from "next/image";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
 const Nav = () => {
-  const isUserLoggedIn = true;
+  const { data: session } = useSession();
+
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
@@ -32,9 +33,9 @@ const Nav = () => {
 
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
-            <Link href="/create">
+            <Link href="/Create-Prompt">
               <button className="black_btn">Create Post</button>
             </Link>
             <button type="button" className="outline_btn" onClick={signOut}>
@@ -43,7 +44,7 @@ const Nav = () => {
             <Link href="/profile">
               {/* this will be the image of the  user*/}
               <Image
-                src="/assets/images/profile.svg"
+                src={session?.user?.image}
                 width={37}
                 height={37}
                 alt="Profile"
@@ -69,10 +70,10 @@ const Nav = () => {
 
       {/* Mobile Navigation */}
       <div className="sm:hidden flex gap-3">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex">
             <Image
-              src="/assets/images/logo.svg"
+              src={session?.user?.image}
               alt="Profile"
               width={37}
               height={37}
@@ -91,7 +92,7 @@ const Nav = () => {
                   My Profile
                 </Link>
                 <Link
-                  href="/create-prompt"
+                  href="/Create-Prompt"
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >
