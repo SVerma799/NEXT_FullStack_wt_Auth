@@ -2,8 +2,12 @@
 
 import Form from "@components/Form";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const CreatePrompt = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [post, setPost] = useState({
     prompt: "",
@@ -12,19 +16,31 @@ const CreatePrompt = () => {
 
   const createPrompt = async (e) => {
     e.preventDefault();
-    // setSubmitting(true);
-    // const res = await fetch("/api/create-prompt", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(post),
-    // });
-    // setSubmitting(false);
-    // const json = await res.json();
-    // if (!res.ok) throw Error(json.message);
-    // alert("Prompt Created");
-    // router.push("/");
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("/api/prompt/new", {
+        method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        body: JSON.stringify({
+          prompt: post.prompt,
+          userId: session.user.id,
+          tag: post.tag,
+        }),
+      });
+
+      if (res.ok) {
+        alert("Prompt Created");
+        router.push("/");
+      }
+      setSubmitting(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
