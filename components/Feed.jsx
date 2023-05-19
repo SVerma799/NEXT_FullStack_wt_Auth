@@ -27,7 +27,6 @@ const Feed = () => {
     const fetchData = async () => {
       const res = await fetch(`/api/users/${session?.user?.id}/posts`);
       const data = await res.json();
-      console.log(data);
       setPosts(data);
     };
 
